@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Checkbox } from "./components/form/Checkbox"
 import { Input } from "./components/form/Input"
+import { InputRange } from "./components/form/InputRange"
 import { ProductCategoryRow } from "./components/products/ProductCategoryRow"
 import { ProductRow } from "./components/products/ProductRow"
 
@@ -20,19 +21,41 @@ const PRODUCTS = [
 function App() {
   const [showStockedOnly, setShowStockedOnly] = useState(false)
   const [search, setSearch] = useState('')
+  const [maxPrice, setMaxPrice] = useState(5)
+
+  const visibleProducts = PRODUCTS.filter(product => {
+    if(showStockedOnly && !product.stocked){
+      return false
+    }
+
+    if(search && !product.name.includes(search)) {
+      return false
+    }
+
+    const price = parseFloat(product.price.slice(1));
+    if (maxPrice > 0 && price > maxPrice) {
+      return false;
+    }
+     return true
+  })
   return (
     <>
       <SearchBar 
         showStockedOnly={showStockedOnly} 
         onStockedOnlyChange={setShowStockedOnly}
         search={search} 
-        onSearchChange={setSearch}/>
-      <ProductTable products={PRODUCTS}/>
+        onSearchChange={setSearch}
+        rangeBar={maxPrice}
+        onRangeBar={setMaxPrice}
+        />
+
+        
+      <ProductTable products={visibleProducts}/>
     </>
   )
 }
 
-function SearchBar({showStockedOnly, onStockedOnlyChange, search, onSearchChange}) {
+function SearchBar({showStockedOnly, onStockedOnlyChange, search, onSearchChange,rangeBar,onRangeBar}) {
   return (
     <div>
       <div>
@@ -46,6 +69,10 @@ function SearchBar({showStockedOnly, onStockedOnlyChange, search, onSearchChange
           checked={showStockedOnly}
           onChange={onStockedOnlyChange}
           label="N'afficher que les produits en stodck"
+        />
+        <InputRange
+          onChange={onRangeBar}
+          value={rangeBar} 
         />
       </div>
     </div>
