@@ -1,8 +1,9 @@
 import { useEffect } from "react"
+import { useMemo } from "react"
 import { use, useState } from "react"
 import { Checkbox } from "./components/form/Checkbox"
 import { Input } from "./components/form/Input"
-import { InputNumber } from "./components/form/InputNumber"
+import { InputLogin } from "./components/form/InputLogin"
 import { InputRange } from "./components/form/InputRange"
 import { InputTitle } from "./components/form/InputTitle"
 import { ProductCategoryRow } from "./components/products/ProductCategoryRow"
@@ -45,7 +46,13 @@ function App() {
   })
   return (
     <>
+    <Login/>
     <InputChrono />
+    <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       <Checkbox 
         checked={displayTitle}
         onChange={setDisplayTitle}
@@ -72,6 +79,11 @@ function App() {
 function SearchBar({showStockedOnly, onStockedOnlyChange, search, onSearchChange,rangeBar,onRangeBar}) {
   return (
     <div>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       <div>
         <Input 
             value={search} 
@@ -184,6 +196,7 @@ console.log('render')
       })
     }, 1000)
     return () => {
+      
       clearInterval(timer)
     }
   }, [duration])
@@ -192,6 +205,11 @@ console.log('render')
 
   return (
     <div>
+        <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       <Input 
         onChange={handleChange}
         value={duration}
@@ -199,6 +217,52 @@ console.log('render')
       <label>Chrono : {secondsLeft}</label>
     </div>
   )
+}
+
+function Login() {
+  const [firstname, setFirstname] = useState("")
+  const [password, setPassword] = useState("")
+  const security = useMemo(() => {
+    return password ? passwordSecurity(password) : "";
+  }, [password])
+
+  return (
+    <div>
+      <InputLogin 
+        label="Nom d'utilisateur"
+        value={firstname}
+        onChange={setFirstname}
+      />
+      <br/>
+      <InputLogin 
+        label="Password"
+        type="password"
+        value={password}
+        onChange={setPassword}
+        placeholder="Mot de passe"
+      />
+      {password && <div>Sécurité: {security}</div>}
+    </div>
+  )
+}
+
+function passwordSecurity(password) {
+  
+  
+  const lengthOK = password.length >= 8;
+  const hasNumber = /[0-9]/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  const score = [lengthOK, hasNumber, hasUpper, hasSpecial].filter(Boolean).length;
+  
+  if(score <= 1) {
+    return "Faible"
+  } else if (score === 2) {
+    return "Moyen"
+  } else if (score >= 3) {
+    return "Fort"
+  }
+  return "Moyen"
 }
 
 

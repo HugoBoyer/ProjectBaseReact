@@ -1,13 +1,14 @@
+
 /**
  * @param {string} placeholder 
  * @param {string} value 
  * @param {(s: string) => void} onChange 
  */
-export function Input({placeholder, value, onChange}) {
+export function Input({placeholder, value, onChange,type}) {
     return (
         <div>
             <input 
-                type="text" 
+                type={type} 
                 className="form-control"
                 value={value}
                 placeholder={placeholder}
