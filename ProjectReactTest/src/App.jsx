@@ -1,7 +1,10 @@
-import { useState } from "react"
+import { useEffect } from "react"
+import { use, useState } from "react"
 import { Checkbox } from "./components/form/Checkbox"
 import { Input } from "./components/form/Input"
+import { InputNumber } from "./components/form/InputNumber"
 import { InputRange } from "./components/form/InputRange"
+import { InputTitle } from "./components/form/InputTitle"
 import { ProductCategoryRow } from "./components/products/ProductCategoryRow"
 import { ProductRow } from "./components/products/ProductRow"
 
@@ -22,6 +25,8 @@ function App() {
   const [showStockedOnly, setShowStockedOnly] = useState(false)
   const [search, setSearch] = useState('')
   const [maxPrice, setMaxPrice] = useState(5)
+  const [displayTitle, setDisplayTitle] = useState(true)
+
 
   const visibleProducts = PRODUCTS.filter(product => {
     if(showStockedOnly && !product.stocked){
@@ -40,6 +45,15 @@ function App() {
   })
   return (
     <>
+    <InputChrono />
+      <Checkbox 
+        checked={displayTitle}
+        onChange={setDisplayTitle}
+        id="titleshow"
+        label="Afficher le champs titre"
+      />
+      {displayTitle && <EditInput/>}
+      
       <SearchBar 
         showStockedOnly={showStockedOnly} 
         onStockedOnlyChange={setShowStockedOnly}
@@ -103,6 +117,87 @@ function ProductTable({products}) {
         {rows}
       </tbody>
     </table>
+  )
+}
+
+
+
+
+function EditInput() {
+
+  const [title, setTitle] = useState('')
+  const [firstname, setFirstname] = useState('')
+
+  useEffect(() => {
+    const originalTitle  = document.title
+    return () => {
+      document.title = originalTitle
+    } 
+  }, []);
+
+  useEffect(() => {
+    console.log('title')
+      document.title = title
+  }, [title])
+
+  return (
+    <div>
+      <div>
+        <InputTitle 
+        onChange={setTitle}
+        value={title} 
+      />
+      <InputTitle 
+        onChange={setFirstname} 
+        value={firstname}
+      />  
+      </div>
+    <br/>
+    </div>
+        
+  )
+
+}
+
+function InputChrono() {
+  const [duration, setDuration] = useState(5)
+  const [secondsLeft, setSecondsLeft] = useState(duration)
+  
+
+
+  const handleChange = (v) => {
+    setDuration(v)
+
+    setSecondsLeft(v)
+  }
+  
+console.log('render')
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSecondsLeft(v => {
+        if (v <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return v - 1;
+      })
+    }, 1000)
+    return () => {
+      clearInterval(timer)
+    }
+  }, [duration])
+
+  
+
+  return (
+    <div>
+      <Input 
+        onChange={handleChange}
+        value={duration}
+      /> 
+      <label>Chrono : {secondsLeft}</label>
+    </div>
   )
 }
 
