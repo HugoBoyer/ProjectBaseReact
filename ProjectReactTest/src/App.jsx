@@ -1,13 +1,20 @@
 import { useEffect } from "react"
 import { useMemo } from "react"
+import { useRef } from "react"
 import { use, useState } from "react"
 import { Checkbox } from "./components/form/Checkbox"
+import { useToggle } from "./components/hooks/useToggle"
 import { Input } from "./components/form/Input"
 import { InputLogin } from "./components/form/InputLogin"
 import { InputRange } from "./components/form/InputRange"
 import { InputTitle } from "./components/form/InputTitle"
+import { Text } from "./components/form/Text"
 import { ProductCategoryRow } from "./components/products/ProductCategoryRow"
 import { ProductRow } from "./components/products/ProductRow"
+import { useIncrement } from "./components/hooks/useIncrement"
+import { useDocumentTitle } from "./components/hooks/useDocumentTitle"
+import { useFetch } from "./components/hooks/useFetch"
+
 
 const PRODUCTS = [
   {category: "Food", price: "$2", stocked:true, name:"ships"},
@@ -27,6 +34,18 @@ function App() {
   const [search, setSearch] = useState('')
   const [maxPrice, setMaxPrice] = useState(5)
   const [displayTitle, setDisplayTitle] = useState(true)
+  const [checked, toggleCheck] = useToggle()
+  const {count, increment, decrement} = useIncrement({
+    base:0,
+    max: 10,
+    min: 0
+  })
+
+  const {loading, data, errors} = useFetch('https://jsonplaceholder.typicode.com/posts?_limit=10&_delay=2000')
+
+  const [name, setName] = useState("")
+  useDocumentTitle(name ? `Editer  ${name}` : null)
+
 
 
   const visibleProducts = PRODUCTS.filter(product => {
@@ -44,8 +63,34 @@ function App() {
     }
      return true
   })
+
+
+
   return (
     <>
+    {loading && <div>Chargement</div>}
+    {errors && <div>{errors}</div>}
+    {data && <div>
+        {JSON.stringify(data)}
+      </div>}
+
+
+
+
+    <InputLogin value={name} onChange={setName}/>
+    <p>Title </p>
+    <div>
+      Compteur {count}
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>Decrement</button>
+    </div>
+    
+    <Checkbox 
+      checked={checked}
+      onChange={toggleCheck}   
+    />
+    {checked && "Je suis coché"}
+    <Text/>
     <Login/>
     <InputChrono />
     <br/>
@@ -183,8 +228,6 @@ function InputChrono() {
     setSecondsLeft(v)
   }
   
-console.log('render')
-
   useEffect(() => {
     const timer = setInterval(() => {
       setSecondsLeft(v => {
