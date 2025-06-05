@@ -12,7 +12,12 @@ export function useFetch(url, options={}) {
             ...options.headers
         }
     }).then(result => result.json()).then(data => {
+        setLoading(false)
         setData(data)
+    }).catch((e) => {
+        setErrors(e)
+    }).finally(() => {
+        setLoading(false)
     })
     }, [])
 

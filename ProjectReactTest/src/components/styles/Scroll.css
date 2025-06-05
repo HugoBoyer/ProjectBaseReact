@@ -1,0 +1,10 @@
+
+    .classScroll {
+        height: 300px;
+        width: 150px;
+        overflow-y :scroll;
+        background: '#EEE';
+        margin: 20px;
+        position: relative 
+    }
+
