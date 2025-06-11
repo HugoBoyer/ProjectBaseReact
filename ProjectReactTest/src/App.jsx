@@ -1,23 +1,10 @@
 import {createPortal} from "react-dom"
-import { useEffect } from "react"
-import { useRef } from "react"
-import { use, useState } from "react"
-import { Checkbox } from "./components/form/Checkbox"
-import { useToggle } from "./components/hooks/useToggle"
-import { Input } from "./components/form/Input"
-import { InputLogin } from "./components/form/InputLogin"
-import { InputRange } from "./components/form/InputRange"
-import { Text } from "./components/form/Text"
-import { ProductCategoryRow } from "./components/productsPage/productTable/ProductCategoryRow"
-import { ProductRow } from "./components/productsPage/productTable/ProductRow"
-import { useIncrement } from "./components/hooks/useIncrement"
-import { useDocumentTitle } from "./components/hooks/useDocumentTitle"
-import { useFetch } from "./components/hooks/useFetch"
+
 import { useCallback } from "react"
 import  './components/styles/Scroll.css'
 import { PageFeat } from "./components/Feat/PageFeat"
 import { ProductsPage } from "./components/productsPage/productsPage"
-
+import { ErrorBoundary } from "react-error-boundary";
 
 
 
@@ -41,10 +28,26 @@ function App() {
       <Modal />
     </div>
       <PageFeat />
-      <ProductsPage />
+      <ErrorBoundary 
+         FallbackComponent={AlertError} 
+         onReset={() => console.log('reset')}>
+        <ProductsPage />
+      </ErrorBoundary>
     </>
   )
 }
+
+function AlertError({error, resetErrorBoundary}) {
+   return (
+      <div>
+        {error.toString()}
+        <button 
+          onClick={resetErrorBoundary}>Reset</button>
+      </div>
+   )
+}
+
+
 
 function Modal() {
   return createPortal(<div style={{
